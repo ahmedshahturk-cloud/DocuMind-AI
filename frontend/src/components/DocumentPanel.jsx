@@ -12,7 +12,10 @@ export default function DocumentPanel({ onDocumentSelect, activeDocId, refreshTr
     try {
       setLoading(true);
       const data = await getDocuments();
-      setDocuments(data.documents || []);
+      const sortedDocs = (data.documents || []).sort((a, b) => 
+        new Date(b.upload_time) - new Date(a.upload_time)
+      );
+      setDocuments(sortedDocs);
     } catch (error) {
       console.error('Failed to fetch documents:', error);
     } finally {
@@ -40,7 +43,7 @@ export default function DocumentPanel({ onDocumentSelect, activeDocId, refreshTr
   };
 
   const handleUploadSuccess = (doc) => {
-    setDocuments((prev) => [...prev, doc]);
+    setDocuments((prev) => [doc, ...prev]);
     if (onDocumentSelect) onDocumentSelect(doc.id);
   };
 
