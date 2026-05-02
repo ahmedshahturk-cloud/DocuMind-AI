@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Brain, Sun, Moon, Github } from 'lucide-react';
+import { Brain, Sun, Moon, Code } from 'lucide-react';
 
 export default function Header({ darkMode, toggleTheme, showNav = true }) {
   return (
@@ -145,7 +145,7 @@ export default function Header({ darkMode, toggleTheme, showNav = true }) {
             e.currentTarget.style.background = 'var(--bg-secondary)';
           }}
         >
-          <Github size={18} />
+          <Code size={18} />
         </a>
       </div>
     </header>

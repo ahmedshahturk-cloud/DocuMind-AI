@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 
 import fitz  # PyMuPDF
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from rag.vectorstore import add_documents, delete_document_vectors
 

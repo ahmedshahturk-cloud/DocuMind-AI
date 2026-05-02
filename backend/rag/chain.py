@@ -4,7 +4,7 @@ RAG chain: retrieval-augmented generation using LangChain + Gemini.
 import os
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 from .vectorstore import search_documents
 
 load_dotenv()
