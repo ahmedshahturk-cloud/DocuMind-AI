@@ -4,7 +4,21 @@ Chat routes: query documents using RAG pipeline.
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from rag.chain import query_rag
+from rag.chain import query_rag, clear_chat_history, get_chat_history
+
+
+@router.get("/chat/history/{session_id}")
+async def get_history(session_id: str):
+    """Get chat history for a session."""
+    history = get_chat_history(session_id)
+    return {"history": history, "session_id": session_id}
+
+
+@router.delete("/chat/clear/{session_id}")
+async def clear_chat(session_id: str):
+    """Clear chat history for a session."""
+    clear_chat_history(session_id)
+    return {"message": "Chat history cleared successfully", "session_id": session_id}
 
 router = APIRouter()
 

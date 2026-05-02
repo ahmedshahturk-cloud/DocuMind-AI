@@ -186,39 +186,84 @@ export default function DocumentPanel({ onDocumentSelect, activeDocId, refreshTr
                 </div>
               </div>
 
-              {/* Delete */}
-              <button
-                onClick={(e) => handleDelete(doc.id, e)}
-                disabled={deleting === doc.id}
-                style={{
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '6px',
-                  border: 'none',
-                  background: 'transparent',
-                  color: 'var(--text-muted)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: deleting === doc.id ? 'not-allowed' : 'pointer',
-                  transition: 'all 0.2s ease',
-                  flexShrink: 0,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
-                  e.currentTarget.style.color = 'var(--error)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.color = 'var(--text-muted)';
-                }}
-              >
-                {deleting === doc.id ? (
-                  <Loader2 size={14} style={{ animation: 'spin-slow 1s linear infinite' }} />
+              {/* Actions */}
+              <div style={{ display: 'flex', gap: '4px' }}>
+                {activeDocId === doc.id ? (
+                  <div
+                    style={{
+                      fontSize: '0.65rem',
+                      color: 'var(--accent-purple)',
+                      fontWeight: 600,
+                      background: 'rgba(124, 58, 237, 0.1)',
+                      padding: '2px 6px',
+                      borderRadius: '4px',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    Active
+                  </div>
                 ) : (
-                  <Trash2 size={14} />
+                  <button
+                    onClick={() => onDocumentSelect && onDocumentSelect(doc.id)}
+                    style={{
+                      padding: '4px 8px',
+                      borderRadius: '6px',
+                      border: '1px solid var(--border-color)',
+                      background: 'var(--bg-primary)',
+                      color: 'var(--text-secondary)',
+                      fontSize: '0.65rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--accent-purple)';
+                      e.currentTarget.style.color = 'var(--accent-purple)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--border-color)';
+                      e.currentTarget.style.color = 'var(--text-secondary)';
+                    }}
+                  >
+                    Chat
+                  </button>
                 )}
-              </button>
+
+                {/* Delete */}
+                <button
+                  onClick={(e) => handleDelete(doc.id, e)}
+                  disabled={deleting === doc.id}
+                  style={{
+                    width: '28px',
+                    height: '28px',
+                    borderRadius: '6px',
+                    border: 'none',
+                    background: 'transparent',
+                    color: 'var(--text-muted)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: deleting === doc.id ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.2s ease',
+                    flexShrink: 0,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+                    e.currentTarget.style.color = 'var(--error)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = 'var(--text-muted)';
+                  }}
+                >
+                  {deleting === doc.id ? (
+                    <Loader2 size={14} style={{ animation: 'spin-slow 1s linear infinite' }} />
+                  ) : (
+                    <Trash2 size={14} />
+                  )}
+                </button>
+              </div>
             </div>
           ))
         )}

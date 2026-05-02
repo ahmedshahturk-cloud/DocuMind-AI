@@ -63,6 +63,12 @@ def add_to_history(session_id: str, role: str, content: str) -> None:
         _chat_histories[session_id] = _chat_histories[session_id][-20:]
 
 
+def clear_chat_history(session_id: str) -> None:
+    """Clear chat history for a session."""
+    if session_id in _chat_histories:
+        _chat_histories[session_id] = []
+
+
 def query_rag(question: str, session_id: str) -> str:
     """Run the full RAG pipeline: retrieve context, build prompt, query Gemini."""
     # 1. Retrieve relevant chunks

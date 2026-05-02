@@ -33,11 +33,21 @@ export const deleteDocument = async (docId) => {
   return response.data;
 };
 
+export const getChatHistory = async (sessionId) => {
+  const response = await api.get(`/chat/history/${sessionId}`);
+  return response.data;
+};
+
 export const sendChatMessage = async (query, sessionId = 'default') => {
   const response = await api.post('/chat', {
     query,
     session_id: sessionId,
   });
+  return response.data;
+};
+
+export const clearChatHistory = async (sessionId) => {
+  const response = await api.delete(`/chat/clear/${sessionId}`);
   return response.data;
 };
 

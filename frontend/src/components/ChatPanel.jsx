@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, MessageSquare, Sparkles, Loader2 } from 'lucide-react';
-import { sendChatMessage } from '../lib/api';
+import { Send, Bot, User, MessageSquare, Sparkles, Loader2, Plus, RefreshCw } from 'lucide-react';
+import { sendChatMessage, getChatHistory, clearChatHistory } from '../lib/api';
 
 function TypingIndicator() {
   return (
@@ -108,12 +108,30 @@ export default function ChatPanel({ sessionId = 'default' }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isHistoryLoading, setIsHistoryLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  const fetchHistory = async () => {
+    if (sessionId === 'default') return;
+    try {
+      setIsHistoryLoading(true);
+      const data = await getChatHistory(sessionId);
+      setMessages(data.history || []);
+    } catch (error) {
+      console.error('Failed to fetch chat history:', error);
+    } finally {
+      setIsHistoryLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchHistory();
+  }, [sessionId]);
 
   useEffect(() => {
     scrollToBottom();
@@ -143,6 +161,17 @@ export default function ChatPanel({ sessionId = 'default' }) {
     }
   };
 
+  const handleNewChat = async () => {
+    if (window.confirm('Are you sure you want to clear this chat history?')) {
+      try {
+        await clearChatHistory(sessionId);
+        setMessages([]);
+      } catch (error) {
+        console.error('Failed to clear chat:', error);
+      }
+    }
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -160,6 +189,55 @@ export default function ChatPanel({ sessionId = 'default' }) {
         background: 'var(--bg-primary)',
       }}
     >
+      {/* Chat Header */}
+      <div
+        style={{
+          padding: '12px 24px',
+          borderBottom: '1px solid var(--border-color)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          background: 'var(--bg-secondary)',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <MessageSquare size={18} color="var(--accent-purple)" />
+          <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+            Conversation
+          </span>
+        </div>
+        
+        <button
+          onClick={handleNewChat}
+          disabled={messages.length === 0 || isLoading}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '6px 12px',
+            borderRadius: '8px',
+            border: '1px solid var(--border-color)',
+            background: 'var(--bg-primary)',
+            color: 'var(--text-secondary)',
+            fontSize: '0.75rem',
+            fontWeight: 500,
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = 'var(--accent-purple)';
+            e.currentTarget.style.color = 'var(--accent-purple)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = 'var(--border-color)';
+            e.currentTarget.style.color = 'var(--text-secondary)';
+          }}
+        >
+          <Plus size={14} />
+          New Chat
+        </button>
+      </div>
+
       {/* Messages Area */}
       <div
         style={{
@@ -169,8 +247,15 @@ export default function ChatPanel({ sessionId = 'default' }) {
           display: 'flex',
           flexDirection: 'column',
           gap: '20px',
+          position: 'relative',
         }}
       >
+        {isHistoryLoading ? (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.05)', zIndex: 5 }}>
+             <Loader2 size={32} className="animate-spin-slow" color="var(--accent-purple)" />
+          </div>
+        ) : null}
+
         {messages.length === 0 ? (
           /* Empty State */
           <div
