@@ -44,10 +44,15 @@ def add_documents(texts: list[str], metadatas: list[dict], doc_id: str) -> None:
                     print(f"Skipping chunk {i+j} due to persistent embedding error: {inner_e}")
 
 
-def search_documents(query: str, k: int = 5) -> list:
-    """Perform similarity search and return top K relevant chunks."""
+def search_documents(query: str, doc_id: str = None, k: int = 5) -> list:
+    """Perform similarity search and return top K relevant chunks, optionally filtered by doc_id."""
     vectorstore = get_vectorstore()
-    results = vectorstore.similarity_search(query, k=k)
+    
+    search_kwargs = {}
+    if doc_id and doc_id != "default":
+        search_kwargs["filter"] = {"doc_id": doc_id}
+        
+    results = vectorstore.similarity_search(query, k=k, **search_kwargs)
     return results
 
 

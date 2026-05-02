@@ -72,7 +72,7 @@ def clear_chat_history(session_id: str) -> None:
 def query_rag(question: str, session_id: str) -> str:
     """Run the full RAG pipeline: retrieve context, build prompt, query Gemini."""
     # 1. Retrieve relevant chunks
-    relevant_docs = search_documents(question, k=5)
+    relevant_docs = search_documents(question, doc_id=session_id, k=5)
     if not relevant_docs:
         return "No documents have been uploaded yet. Please upload a PDF document first."
 
