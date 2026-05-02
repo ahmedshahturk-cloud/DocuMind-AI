@@ -17,6 +17,6 @@ def get_embeddings() -> GoogleGenerativeAIEmbeddings:
             "Get a free key at https://aistudio.google.com and add it to backend/.env"
         )
     return GoogleGenerativeAIEmbeddings(
-        model="models/text-embedding-004",
+        model="models/gemini-embedding-2",
         google_api_key=api_key,
     )
