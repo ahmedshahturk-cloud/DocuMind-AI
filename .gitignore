@@ -35,3 +35,7 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# Project Specific
+backend/uploads/
+backend/documents_meta.json
