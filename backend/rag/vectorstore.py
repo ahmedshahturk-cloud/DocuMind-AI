@@ -19,11 +19,22 @@ def get_vectorstore(collection_name: str = "documind") -> Chroma:
     )
 
 
+import concurrent.futures
+
 def add_documents(texts: list[str], metadatas: list[dict], doc_id: str) -> None:
-    """Add chunked document texts to the vector store."""
+    """Add chunked document texts to the vector store concurrently."""
     vectorstore = get_vectorstore()
-    ids = [f"{doc_id}_chunk_{i}" for i in range(len(texts))]
-    vectorstore.add_texts(texts=texts, metadatas=metadatas, ids=ids)
+    
+    def process_chunk(i, text):
+        try:
+            _id = f"{doc_id}_chunk_{i}"
+            vectorstore.add_texts(texts=[text], metadatas=[metadatas[i]], ids=[_id])
+        except Exception as e:
+            print(f"Skipping chunk {i} due to embedding error: {e}")
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+        futures = [executor.submit(process_chunk, i, text) for i, text in enumerate(texts)]
+        concurrent.futures.wait(futures)
 
 
 def search_documents(query: str, k: int = 5) -> list:
