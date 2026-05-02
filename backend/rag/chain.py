@@ -7,7 +7,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from .vectorstore import search_documents
 
-load_dotenv()
+load_dotenv(override=True)
 
 SYSTEM_PROMPT = (
     "You are a helpful document assistant named DocuMind AI. "

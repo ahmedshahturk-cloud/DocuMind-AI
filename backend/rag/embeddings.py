@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
-load_dotenv()
+load_dotenv(override=True)
 
 
 def get_embeddings() -> GoogleGenerativeAIEmbeddings:

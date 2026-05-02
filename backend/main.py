@@ -10,7 +10,7 @@ from routes.upload import router as upload_router
 from routes.chat import router as chat_router
 
 # Load environment variables
-load_dotenv()
+load_dotenv(override=True)
 
 app = FastAPI(
     title="DocuMind AI",
