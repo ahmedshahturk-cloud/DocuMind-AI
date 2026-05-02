@@ -120,6 +120,10 @@ async def upload_document(file: UploadFile = File(...)):
 
     except HTTPException:
         raise
+    except ValueError as e:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         # Cleanup on failure
         if os.path.exists(file_path):
