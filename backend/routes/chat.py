@@ -7,6 +7,9 @@ from pydantic import BaseModel
 from rag.chain import query_rag, clear_chat_history, get_chat_history
 
 
+router = APIRouter()
+
+
 @router.get("/chat/history/{session_id}")
 def get_history(session_id: str):
     """Get chat history for a session."""
@@ -19,8 +22,6 @@ def clear_chat(session_id: str):
     """Clear chat history for a session."""
     clear_chat_history(session_id)
     return {"message": "Chat history cleared successfully", "session_id": session_id}
-
-router = APIRouter()
 
 
 class ChatRequest(BaseModel):
