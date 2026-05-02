@@ -22,19 +22,26 @@ def get_vectorstore(collection_name: str = "documind") -> Chroma:
 import concurrent.futures
 
 def add_documents(texts: list[str], metadatas: list[dict], doc_id: str) -> None:
-    """Add chunked document texts to the vector store concurrently."""
+    """Add chunked document texts to the vector store in batches for speed."""
     vectorstore = get_vectorstore()
+    batch_size = 10
     
-    def process_chunk(i, text):
+    for i in range(0, len(texts), batch_size):
+        batch_texts = texts[i : i + batch_size]
+        batch_metadatas = metadatas[i : i + batch_size]
+        batch_ids = [f"{doc_id}_chunk_{j}" for j in range(i, i + len(batch_texts))]
+        
         try:
-            _id = f"{doc_id}_chunk_{i}"
-            vectorstore.add_texts(texts=[text], metadatas=[metadatas[i]], ids=[_id])
+            # Try to add the whole batch at once
+            vectorstore.add_texts(texts=batch_texts, metadatas=batch_metadatas, ids=batch_ids)
         except Exception as e:
-            print(f"Skipping chunk {i} due to embedding error: {e}")
-
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        futures = [executor.submit(process_chunk, i, text) for i, text in enumerate(texts)]
-        concurrent.futures.wait(futures)
+            print(f"Batch {i//batch_size} failed: {e}. Falling back to sequential processing for this batch.")
+            # Fallback: process each chunk in the failed batch one by one
+            for j, (text, meta, _id) in enumerate(zip(batch_texts, batch_metadatas, batch_ids)):
+                try:
+                    vectorstore.add_texts(texts=[text], metadatas=[meta], ids=[_id])
+                except Exception as inner_e:
+                    print(f"Skipping chunk {i+j} due to persistent embedding error: {inner_e}")
 
 
 def search_documents(query: str, k: int = 5) -> list:
