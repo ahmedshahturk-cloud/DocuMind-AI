@@ -9,12 +9,32 @@
 
 ## ✨ Features
 
-- 📄 **PDF Upload** — Drag & drop PDF documents for instant processing
-- 🤖 **AI Chat** — Ask questions and get accurate, context-aware answers
-- 🔍 **RAG Pipeline** — Retrieval Augmented Generation for document-grounded responses
-- 🧠 **Google Gemini** — Powered by Google's latest AI model (gemini-1.5-flash)
-- 🎨 **Beautiful UI** — Stunning dark theme with glassmorphism and animations
-- 📚 **Multi-Document** — Upload and manage multiple documents
+- 📄 **PDF Upload** — Drag & drop PDF documents with **10x faster batch processing**.
+- 🤖 **AI Chat** — Context-aware conversations powered by **Gemini 1.5 Flash**.
+- 🔍 **Document Isolation** — Intelligent RAG pipeline that strictly filters context per document.
+- 📚 **Chat History** — Persistent conversation history for every document session.
+- 🎨 **Premium UI** — Modern dark mode with smooth animations and glassmorphism.
+- 🚀 **New Chat** — Start fresh conversations anytime with a single click.
+
+## 🏗️ Architecture & Workflow
+
+```mermaid
+graph TD
+    A[User] -->|Upload PDF| B(Frontend - React)
+    B -->|POST /upload| C(Backend - FastAPI)
+    C -->|Extract Text| D[PyMuPDF]
+    D -->|Chunking| E[Recursive Splitter]
+    E -->|Batch Embeddings| F[Google Gemini API]
+    F -->|Store Vectors| G[(ChromaDB)]
+    
+    A -->|Ask Question| B
+    B -->|POST /chat| C
+    C -->|Search Query| G
+    G -->|Relevant Chunks| H[Context Builder]
+    H -->|Filtered Context + History| I[Gemini 1.5 Flash]
+    I -->|Generated Answer| B
+    B -->|Display Answer| A
+```
 
 ## 🏗️ Tech Stack
 
@@ -95,6 +115,8 @@ documind-ai/
 |--------|----------|-------------|
 | POST | `/upload` | Upload a PDF document |
 | POST | `/chat` | Send a question, get AI answer |
+| GET | `/chat/history/{id}` | Fetch persistent chat history |
+| DELETE | `/chat/clear/{id}` | Clear history for a session |
 | GET | `/documents` | List all uploaded documents |
 | DELETE | `/document/{id}` | Delete a document |
 | GET | `/health` | Health check |
