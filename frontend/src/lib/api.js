@@ -4,7 +4,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const api = axios.create({
   baseURL: API_URL,
-  timeout: 120000, // 2 min for large file uploads
+  timeout: 300000, // 5 minutes
 });
 
 export const uploadDocument = async (file, onProgress) => {

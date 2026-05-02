@@ -57,7 +57,7 @@ def chunk_text(text: str, chunk_size: int = 1000, chunk_overlap: int = 200) -> l
 
 
 @router.post("/upload")
-async def upload_document(file: UploadFile = File(...)):
+def upload_document(file: UploadFile = File(...)):
     """Upload a PDF, extract text, chunk it, embed and store in ChromaDB."""
     if not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDF files are supported.")
@@ -67,7 +67,7 @@ async def upload_document(file: UploadFile = File(...)):
 
     # Save file to disk
     file_path = os.path.join(UPLOAD_DIR, f"{doc_id}_{file.filename}")
-    content = await file.read()
+    content = file.file.read()
 
     with open(file_path, "wb") as f:
         f.write(content)
@@ -132,14 +132,14 @@ async def upload_document(file: UploadFile = File(...)):
 
 
 @router.get("/documents")
-async def list_documents():
+def list_documents():
     """List all uploaded documents."""
     metadata = _load_metadata()
     return {"documents": metadata}
 
 
 @router.delete("/document/{doc_id}")
-async def delete_document(doc_id: str):
+def delete_document(doc_id: str):
     """Delete a document and its vectors."""
     metadata = _load_metadata()
     doc = next((d for d in metadata if d["id"] == doc_id), None)
