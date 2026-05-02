@@ -26,7 +26,7 @@ def get_llm() -> ChatGoogleGenerativeAI:
     """Return a configured Gemini LLM instance."""
     api_key = os.getenv("GEMINI_API_KEY")
     return ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash",
+        model="gemini-2.5-flash",
         google_api_key=api_key,
         temperature=0.3,
         convert_system_message_to_human=True,
